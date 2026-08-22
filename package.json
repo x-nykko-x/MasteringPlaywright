@@ -10,6 +10,11 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^26.2.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.4.2"
   }
 }
