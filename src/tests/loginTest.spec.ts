@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage";
 import { encrypt } from "../utils/CryptojsUtil";
 import { decrypt } from "../utils/CryptojsUtil";
 import { decryptEnvFile, encryptEnvFile } from "../utils/EncryptEnvFile";
+import logger from "../utils/LoggerUtil";
 
 test("test", async({page}) => {
 
@@ -15,6 +16,7 @@ test("test", async({page}) => {
     await loginPage.clickLoginButton();
     // await loginPage.fillPassword("Singapur0735*")
     await loginPage.fillPassword(decrypt(process.env.password!))
+    logger.info("Test for login is completed")
 
     // const homePage = await loginPage.clickLoginButton();
     // await homePage.expectServiceTitleToBeVisible();
