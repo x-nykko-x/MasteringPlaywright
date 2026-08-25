@@ -1,26 +1,37 @@
 // Test script using the Page Object Model
-import {test} from "@playwright/test";
+import {expect, test} from "@playwright/test";
 import LoginPage from "../pages/LoginPage";
 import { encrypt } from "../utils/CryptojsUtil";
 import { decrypt } from "../utils/CryptojsUtil";
 import { decryptEnvFile, encryptEnvFile } from "../utils/EncryptEnvFile";
 import logger from "../utils/LoggerUtil";
 
-test("test", async({page}) => {
+const authFile = "src/config/auth.json"
+
+test("Login and create the storage state json file", async({page}) => {
 
     const loginPage = new LoginPage(page);
 
     await loginPage.navigateToLoginPage();
-    // await loginPage.fillUsername("nicolasplaywright.0da4f01864cd@agentforce.com")
     await loginPage.fillUsername(decrypt(process.env.userid!))
     await loginPage.clickLoginButton();
-    // await loginPage.fillPassword("Singapur0735*")
     await loginPage.fillPassword(decrypt(process.env.password!))
-    logger.info("Test for login is completed")
-
+    await loginPage.clickLoginButton();
     // const homePage = await loginPage.clickLoginButton();
     // await homePage.expectServiceTitleToBeVisible();
-})
+    logger.info("Test for login is completed");
+    await page.context().storageState({ path: authFile});
+});
+
+test("Login with auth file", async({browser}) => {
+
+    const context = await browser.newContext({storageState: authFile});
+    const page = await context.newPage();
+    await page.goto(
+        "https://orgfarm-18068347c3-dev-ed.develop.lightning.force.com/lightning/page/home"
+    );
+    await expect(page.getByRole("link", {name: "Accounts"})).toBeVisible();
+});
 
 test('Sample env test', async({page}) => {
 
@@ -32,4 +43,4 @@ test('Sample env test', async({page}) => {
     // console.log('Decrypted:', decryptedText);
     encryptEnvFile();
     // decryptEnvFile();
-})
+});
